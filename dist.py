@@ -66,7 +66,7 @@ def train():
         with tqdm(dataloader, unit="train_step") as pbar:
             for idx, (data, label) in enumerate(pbar):
                 data, label = data.to(device), label.to(device)
-                with torch.amp.autocast(device_type=device, dtype=torch.float16, ):
+                with torch.amp.autocast(device_type=device_type=device.split(":")[0], dtype=torch.float16, ):
                     pred_label = model(data)
                     loss = criterion(pred_label, label)
                 scaler.scale(loss).backward()
