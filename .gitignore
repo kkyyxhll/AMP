@@ -1,6 +1,7 @@
-<<<<<<< HEAD
+
 .idea/
-=======
-.idea/
+
 mnist/
->>>>>>> 7d9e634 (first-commit)
+
+*.png
+*.pth
