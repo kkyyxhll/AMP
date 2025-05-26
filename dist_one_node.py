@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 
 import time
 """
-torchrun --nproc_per_node=1 dist.py 
+torchrun --nproc_per_node=1 dist_one_node.py 
     会自动分配环境变量，LOCAL_RANK，每个进程会分配一个LOCAL_RANK
  
 
