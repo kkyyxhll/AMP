@@ -63,7 +63,7 @@ def train():
 
     all_losses = []
     print(f"Training on {device}, Rank:{dist.get_rank()}")
-
+    start_time = time.time()
     for e in range(0, args.epoch):
         losses = 0.0
         with tqdm(dataloader, unit="train_step") as pbar:
@@ -83,6 +83,7 @@ def train():
                 pbar.set_postfix(loss=f"{loss:.4f}")
         pbar.update()
         all_losses.append(losses)
+    print(f"Training Spent {time.time() - start_time:.4f}")
 
     if dist.get_rank() == 0 :
         torch.save(model.state_dict(), "model.pth")
@@ -99,6 +100,5 @@ def train():
 
 
 if __name__ == "__main__":
-    start_time = time.time()
+
     train()
-    print(f"Training Spent {time.time() - start_time:.4f}")
