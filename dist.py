@@ -15,10 +15,12 @@ import argparse
 
 from tqdm import tqdm
 import matplotlib.pyplot as plt
+
+import time
 """
 torchrun --nproc_per_node=1 dist.py 
     会自动分配环境变量，LOCAL_RANK，每个进程会分配一个LOCAL_RANK
-
+ 
 
 """
 def train():
@@ -32,7 +34,7 @@ def train():
 
     local_rank = int(os.environ["LOCAL_RANK"])
     device = f"cuda:{local_rank}"
-    dist.init_process_group(backend="gloo", init_method="env://")
+    dist.init_process_group(backend="nccl", )
 
     if device == "cuda":
         torch.cuda.manual_seed_all(42)
@@ -44,7 +46,8 @@ def train():
     )
     model[0].conv1 = nn.Conv2d(1, 64, (7, 7), (2, 2), (3, 3), bias=False)
     model = model.to(device)
-    model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[device], output_device=device)
+
+    model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[local_rank], output_device=local_rank)
 
 
     dataset = datasets.MNIST(root=args.dataset_path,
@@ -96,4 +99,6 @@ def train():
 
 
 if __name__ == "__main__":
+    start_time = time.time()
     train()
+    print(f"Training Spent {time.time() - start_time:.4f}")
